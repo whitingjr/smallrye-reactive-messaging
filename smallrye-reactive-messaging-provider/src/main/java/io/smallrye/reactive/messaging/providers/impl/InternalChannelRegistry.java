@@ -3,6 +3,7 @@ package io.smallrye.reactive.messaging.providers.impl;
 import static io.smallrye.reactive.messaging.providers.i18n.ProviderMessages.msg;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -23,7 +24,7 @@ public class InternalChannelRegistry implements ChannelRegistry {
     private final Map<String, Boolean> outgoing = new HashMap<>();
     private final Map<String, Boolean> incoming = new HashMap<>();
 
-    private final Map<String, Emitter<?>> emitters = new HashMap<>();
+    private final Map<String, Emitter<?>> emitters = new ConcurrentHashMap<>();
     private final Map<String, MutinyEmitter<?>> mutinyEmitters = new HashMap<>();
 
     @Override
@@ -67,7 +68,7 @@ public class InternalChannelRegistry implements ChannelRegistry {
     }
 
     @Override
-    public synchronized Emitter<?> getEmitter(String name) {
+    public Emitter<?> getEmitter(String name) {
         Objects.requireNonNull(name, msg.nameMustBeSet());
         return emitters.get(name);
     }
